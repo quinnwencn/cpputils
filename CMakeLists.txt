@@ -13,6 +13,10 @@ add_library(cpputils SHARED
     $<TARGET_OBJECTS:utils>
 )
 
+target_include_directories(cpputils PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>)
+
 install(TARGETS cpputils 
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib 

@@ -21,3 +21,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     ${GTest_LIBRARIES}
     cpputils::cpputils
 )
+
+enable_testing()
+add_test(NAME cpputils-test COMMAND ${PROJECT_NAME})
