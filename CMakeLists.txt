@@ -10,7 +10,7 @@ include("${CMAKE_CURRENT_BINARY_DIR}/generators/conan_toolchain.cmake")
 add_subdirectory(src)
 
 add_library(cpputils SHARED
-    $<TARGET_OBJECTS:utils>
+    $<TARGET_OBJECTS:string_obj>
 )
 
 target_include_directories(cpputils PUBLIC
