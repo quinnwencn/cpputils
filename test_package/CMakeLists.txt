@@ -22,5 +22,9 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     cpputils::cpputils
 )
 
+add_compile_definitions(
+    TEST_MAIN_CC="${CMAKE_CURRENT_SOURCE_DIR}/src/main.cc"
+)
+
 enable_testing()
 add_test(NAME cpputils-test COMMAND ${PROJECT_NAME})

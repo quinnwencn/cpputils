@@ -14,3 +14,23 @@ TEST(UtilsTest, Arr2StrTest) {
     EXPECT_EQ(str.length(), array.size() * 2);
     EXPECT_EQ("010203040a0b", str);
 }
+
+TEST(UtilsTest, ReadNonExistFile) {
+    std::filesystem::path nonExistFile {"/not/exist/file"};
+    auto content = Utils::ReadFileContent(nonExistFile);
+    EXPECT_TRUE(content.empty());
+}
+
+TEST(UtilsTest, ReadNoPermissionFile) {
+    // in unix
+    std::filesystem::path nonExistFile {"/etc/sudoers"};
+    auto content = Utils::ReadFileContent(nonExistFile);
+    EXPECT_TRUE(content.empty());
+}
+
+TEST(UtilsTest, ReadNormalFile) {
+    // in unix
+    std::filesystem::path nonExistFile {TEST_MAIN_CC};
+    auto content = Utils::ReadFileContent(nonExistFile);
+    EXPECT_FALSE(content.empty());
+}
