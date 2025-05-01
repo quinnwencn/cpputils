@@ -8,7 +8,7 @@ std::string_view HEX_CHARS {"0123456789abcdef"};
 
 }
 
-namespace Utils {
+namespace Cpputils {
 
 std::string ByteArr2HexStr(const std::vector<uint8_t>& arr) {
     std::string hexStr;
