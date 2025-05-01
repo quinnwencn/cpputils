@@ -22,18 +22,4 @@ std::string ByteArr2HexStr(const std::vector<uint8_t>& arr) {
     return hexStr;
 }
 
-std::string ReadFileContent(const std::filesystem::path& file) {
-    if (!std::filesystem::exists(file)) {
-        return {};
-    }
-
-    std::ifstream ifs(file, std::ios::in);
-    if (!ifs.good()) {
-        return {};
-    }
-
-    std::string content((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
-    return content;
-}
-
 }

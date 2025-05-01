@@ -11,6 +11,7 @@ add_subdirectory(src)
 
 add_library(cpputils SHARED
     $<TARGET_OBJECTS:string_obj>
+    $<TARGET_OBJECTS:fileops_obj>
 )
 
 target_include_directories(cpputils PUBLIC
