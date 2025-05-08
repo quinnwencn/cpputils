@@ -5,8 +5,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-include("${CMAKE_CURRENT_BINARY_DIR}/generators/conan_toolchain.cmake")
-
 add_subdirectory(src)
 
 add_library(cpputils SHARED
