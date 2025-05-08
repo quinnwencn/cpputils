@@ -7,7 +7,7 @@ class TestPackage(ConanFile):
     generators = "CMakeDeps", "CMakeToolchain"
 
     def requirements(self):
-        self.requires("cpputils/0.1.0")
+        self.requires(self.tested_reference_str)
         self.requires("gtest/1.13.0", visible=False)
         
     def layout(self):

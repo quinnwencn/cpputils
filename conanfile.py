@@ -1,14 +1,30 @@
 from conan import ConanFile
-from conan.tools.cmake import CMake, cmake_layout, CMakeToolchain
+from conan.tools.cmake import CMake, cmake_layout, CMakeToolchain, CMakeDeps
 
 
-class CppUtil(ConanFile):
+class CppUtilRecipe(ConanFile):
     name = "cpputils"
     version = "0.1.0"
+    package_type = "library"
+    license = "MIT"
+    url = "https:://github.com/quinnwencn/cpputils"
+    author = "Quinn"
     description = "cpputils is a cpp library that provides basic functions."
+    
     settings = "os", "compiler", "build_type", "arch"
+    options = {"shared": [True, False], "fPIC": [True, False]}
+    default_options = {"shared": True, "fPIC": True}
     generator = "CMakeDeps", "CMakeToolchain"
+
     exports_sources = "CMakeLists.txt", "include/*", "src/*"
+
+    def config_options(self):
+        if self.settings.os == "Windows":
+            self.options.rm_safe("fPIC")
+
+    def configure(self):
+        if self.options.shared:
+            self.options.rm_safe("fPIC")
 
     def build_requirements(self):
         self.build_requires("cmake/3.26.3")
@@ -17,6 +33,8 @@ class CppUtil(ConanFile):
         cmake_layout(self)
 
     def generate(self):
+        deps = CMakeDeps(self)
+        deps.generate()
         tc = CMakeToolchain(self)
         tc.generate()
     
