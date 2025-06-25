@@ -7,7 +7,7 @@ class CppUtilRecipe(ConanFile):
     version = "0.1.0"
     package_type = "library"
     license = "MIT"
-    url = "https:://github.com/quinnwencn/cpputils"
+    url = "https://github.com/quinnwencn/cpputils"
     author = "Quinn"
     description = "cpputils is a cpp library that provides basic functions."
     
@@ -25,6 +25,10 @@ class CppUtilRecipe(ConanFile):
     def configure(self):
         if self.options.shared:
             self.options.rm_safe("fPIC")
+
+    def requirements(self):
+        self.requires("gtest/1.13.0")
+        self.requires("fmt/10.1.0")
 
     def build_requirements(self):
         self.build_requires("cmake/3.26.3")

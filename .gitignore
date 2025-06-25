@@ -4,3 +4,4 @@ build
 CMakeUserPresets.json
 .idea
 cmake-build-debug
+*~

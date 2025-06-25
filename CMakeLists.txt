@@ -7,16 +7,16 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_subdirectory(src)
 
-add_library(cpputils SHARED
+add_library(${PROJECT_NAME} SHARED
     $<TARGET_OBJECTS:string_obj>
     $<TARGET_OBJECTS:fileops_obj>
 )
 
-target_include_directories(cpputils PUBLIC
+target_include_directories(${PROJECT_NAME} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>)
 
-install(TARGETS cpputils 
+install(TARGETS ${PROJECT_NAME} 
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib 
     RUNTIME DESTINATION bin

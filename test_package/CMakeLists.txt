@@ -10,7 +10,7 @@ file(GLOB_RECURSE TEST_SOURCES CMAKE_CONFIGURE_DEPENDS
 )
 
 find_package(GTest REQUIRED)
-find_package(cpputils REQUIRED)
+find_package(cpputils CONFIG REQUIRED)
 
 add_executable(${PROJECT_NAME} ${TEST_SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE 
