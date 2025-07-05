@@ -28,6 +28,12 @@ void WriteFile(const std::filesystem::path& file, std::string_view content) {
     ofs.close();
 }
 
+std::string ExtractFileName(std::string_view filename) {
+    std::string path(filename);
+    auto lastSlash = path.find_last_of("/\\");
+    return lastSlash == std::string::npos ? path : path.substr(lastSlash + 1);
+}
+
 TemporaryFile::TemporaryFile(std::string_view hint) {
     TemporaryFilePath_ = std::filesystem::temp_directory_path() / hint;
 }

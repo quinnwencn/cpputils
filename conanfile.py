@@ -4,7 +4,7 @@ from conan.tools.cmake import CMake, cmake_layout, CMakeToolchain, CMakeDeps
 
 class CppUtilRecipe(ConanFile):
     name = "cpputils"
-    version = "0.1.0"
+    version = "0.5.0"
     package_type = "library"
     license = "MIT"
     url = "https://github.com/quinnwencn/cpputils"

@@ -9,6 +9,7 @@ namespace Cpputils {
 
 std::string ReadFile(const std::filesystem::path& file);
 void WriteFile(const std::filesystem::path& file, std::string_view content);
+std::string ExtractFileName(std::string_view filename);
 
 class TemporaryFile {
 public:
