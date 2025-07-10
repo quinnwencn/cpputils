@@ -10,13 +10,19 @@ TEST(FileopsTest, ReadNonExistFile) {
 
 TEST(FileopsTest, ReadNoPermissionFile) {
 #if defined(__unix__) || defined(__APPLE__)
-    std::filesystem::path nonExistFile {"C:/Windows/System32/xwizard.dtd"};
-    auto content = Cpputils::ReadFile(nonExistFile);
+    std::filesystem::path nonPermissionFile {"/etc/sudoers"};
+    auto content = Cpputils::ReadFile(nonPermissionFile);
     EXPECT_TRUE(content.empty());
+
+	auto contentVec = Cpputils::ReadFile2Vec(nonPermissionFile);
+	EXPECT_TRUE(contentVec.empty());
 #elif defined(_WIN32)
-    std::filesystem::path nonExistFile {"/etc/sudoers"};
-    auto content = Cpputils::ReadFile(nonExistFile);
+    std::filesystem::path nonPermissionFile {"C:/Windows/System32/xwizard.dtd"};
+    auto content = Cpputils::ReadFile(nonPermissionFile);
     EXPECT_TRUE(content.empty());
+
+	auto contentVec = Cpputils::ReadFile2Vec(nonPermissionFile);
+	EXPECT_TRUE(contentVec.empty());
 #else
     GTEST_SKIP() << "This test is not applicable on this platform.";
 #endif
@@ -26,6 +32,9 @@ TEST(FileopsTest, ReadNormalFile) {
     std::filesystem::path mainCC {TEST_MAIN_CC};
     auto content = Cpputils::ReadFile(mainCC);
     EXPECT_FALSE(content.empty());
+
+	auto contentVec = Cpputils::ReadFile2Vec(mainCC);
+	EXPECT_TRUE(!contentVec.empty());
 }
 
 TEST(FileopsTest, WriteFile) {
