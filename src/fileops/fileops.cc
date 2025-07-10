@@ -25,13 +25,23 @@ std::vector<uint8_t> ReadFile2Vec(const std::filesystem::path& file) {
         return {};
     }
 
-    std::ifstream ifs(file, std::ios::in);
+    std::ifstream ifs(file, std::ios::binary | std::ios::ate);
     if (!ifs.good()) {
         return {};
     }
 
-    std::istream_iterator<uint8_t> start(ifs), end;
-    std::vector<uint8_t> content(start, end);
+    auto endPos = ifs.tellg();
+    ifs.seekg(0, std::ios::beg);
+    auto size = std::size_t(endPos - ifs.tellg());
+    if (size == 0) {
+        return {};
+    }
+
+    std::vector<uint8_t> content(size);
+    if (!ifs.read(reinterpret_cast<char*>(content.data()), size)) {
+        return {};
+    }
+
     return content;
 }
 

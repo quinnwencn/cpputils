@@ -1,6 +1,7 @@
 #include "cpputils/fileops.h"
 
 #include <gtest/gtest.h>
+#include <fstream>
 
 TEST(FileopsTest, ReadNonExistFile) {
     std::filesystem::path nonExistFile {"/not/exist/file"};
@@ -33,8 +34,30 @@ TEST(FileopsTest, ReadNormalFile) {
     auto content = Cpputils::ReadFile(mainCC);
     EXPECT_FALSE(content.empty());
 
-	auto contentVec = Cpputils::ReadFile2Vec(mainCC);
-	EXPECT_TRUE(!contentVec.empty());
+	std::filesystem::path file = "/tmp/test.txt";
+	std::string str { "Hello World\nLite 2" };
+	std::ofstream(file) << str;
+
+	auto contentVec = Cpputils::ReadFile2Vec(file);
+	std::string actual(contentVec.begin(), contentVec.end());
+	EXPECT_EQ(actual, str);
+}
+
+TEST(ReadFileTest, ReadsBinaryFile) {
+    std::vector<uint8_t> testData{0x01, 0x02, 0x03, 0x00, 0xFF};
+
+    // Write to file
+    std::filesystem::path file = "/tmp/test.bin";
+    std::ofstream(file, std::ios::binary).write(
+        reinterpret_cast<const char*>(testData.data()),
+        testData.size()
+    );
+
+    // Test the function
+    auto content = Cpputils::ReadFile2Vec(file);
+
+    // Verify
+    EXPECT_EQ(testData, content);
 }
 
 TEST(FileopsTest, WriteFile) {
