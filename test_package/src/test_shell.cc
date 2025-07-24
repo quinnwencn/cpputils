@@ -8,6 +8,23 @@
 #include <string>
 #include <gtest/gtest.h>
 
+#ifdef _WIN32
+
+TEST(ShellTest, SimpleTest) {
+    std::string cmd {"dir"};
+    EXPECT_EQ(0, Cpputils::Shell(cmd));
+}
+
+TEST(ShellTest, OutputTest) {
+    std::string cmd {"dir ."};
+    std::string output;
+
+    EXPECT_EQ(0, Cpputils::Shell(cmd, output));
+    EXPECT_TRUE(output.find("Directory") != std::string::npos);
+}
+
+#else
+
 TEST(ShellTest, SimpleTest) {
     std::string cmd {"ls"};
     EXPECT_EQ(0, Cpputils::Shell(cmd));
@@ -28,3 +45,5 @@ TEST(ShellTest, OutputWithStderrTest) {
     EXPECT_NE(0, Cpputils::Shell(cmd, output, true));
     EXPECT_TRUE(output.find("not found") != std::string::npos);
 }
+
+#endif

@@ -6,11 +6,10 @@
 #include <array>
 #include <string>
 
-#ifdef _WIN32
-#include <windows.h>
-#else
+#ifndef _WIN32
 #include <unistd.h>
 #endif
+#include <cstdio>
 
 #include "cpputils/shell.h"
 
@@ -23,56 +22,25 @@ int Shell(std::string_view cmd) {
 
 int Shell(std::string_view cmd, std::string& output, bool includeStderr) {
 #ifdef _WIN32
-	SECURITY_ATTRIBUTES sa;
-    sa.nLength = sizeof(sa);
-    sa.lpSecurityDescriptor = nullptr;
-    sa.bInheritHandle = TRUE;
+	FILE* pipe = _popen(cmd.data(), "r");
+	if (pipe == nullptr) {
+		if (includeStderr) {
+			output = "popen() failed!";
+		}
+		return 1;
+	}
 
-    HANDLE hStdoutRead, hStdoutWrite;
-    if (!CreatePipe(&hStdoutRead, &hStdoutWrite, &sa, 0)) {
-        return -1;
-    }
-    if (!SetHandleInformation(hStdoutRead, HANDLE_FLAG_INHERIT, 0)) {
-        return -1;
-    }
+	std::array<char, 128> buffer;
+	while (fgets(buffer.data(), buffer.size(), pipe) != nullptr) {
+		output += buffer.data();
+	}
 
-    STARTUPINFOA si;
-    PROCESS_INFORMATION pi;
-    ZeroMemory(&si, sizeof(si));
-    ZeroMemory(&pi, sizeof(pi));
-    si.cb = sizeof(si);
-    si.dwFlags |= STARTF_USESTDHANDLES;
-    si.hStdOutput = hStdoutWrite;
-    si.hStdError = includeStderr ? hStdoutWrite : nullptr;
-    si.hStdInput = GetStdHandle(STD_INPUT_HANDLE);
+	int exitCode = _pclose(pipe);
+	if (exitCode == -1) {
+		output += "\nFailed to close pipe or get return code.";
+	}
 
-    // Create process
-    std::string cmdStr(cmd);
-    if (!CreateProcessA(nullptr, cmdStr.data(), nullptr, nullptr, TRUE, 0, nullptr, nullptr, &si, &pi)) {
-        CloseHandle(hStdoutWrite);
-        CloseHandle(hStdoutRead);
-        return -1;
-    }
-
-    CloseHandle(hStdoutWrite);
-
-    // Read output
-    output.clear();
-    char buffer[4096];
-    DWORD bytesRead;
-    while (ReadFile(hStdoutRead, buffer, sizeof(buffer), &bytesRead, nullptr) && bytesRead > 0) {
-        output.append(buffer, bytesRead);
-    }
-
-    CloseHandle(hStdoutRead);
-    WaitForSingleObject(pi.hProcess, INFINITE);
-
-    DWORD exitCode;
-    GetExitCodeProcess(pi.hProcess, &exitCode);
-    CloseHandle(pi.hProcess);
-    CloseHandle(pi.hThread);
-
-    return static_cast<int>(exitCode);
+    return exitCode;
 #else
 	std::string command {cmd};
 	if (includeStderr) {
