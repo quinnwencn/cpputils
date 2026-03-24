@@ -14,9 +14,9 @@ class CppUtilRecipe(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False], "fPIC": [True, False]}
     default_options = {"shared": True, "fPIC": True}
-    generator = "CMakeDeps", "CMakeToolchain"
+    generators = "CMakeDeps", "CMakeToolchain"
 
-    exports_sources = "CMakeLists.txt", "include/*", "src/*"
+    exports_sources = "CMakeLists.txt", "include/*", "src/*", "test/*"
 
     def config_options(self):
         if self.settings.os == "Windows":
@@ -27,25 +27,20 @@ class CppUtilRecipe(ConanFile):
             self.options.rm_safe("fPIC")
 
     def requirements(self):
-        self.requires("gtest/1.13.0")
         self.requires("fmt/10.1.0")
 
     def build_requirements(self):
-        self.build_requires("cmake/3.26.3")
+        self.test_requires("gtest/1.13.0")
+        self.tool_requires("cmake/3.26.3")
 
     def layout(self):
         cmake_layout(self)
 
-    def generate(self):
-        deps = CMakeDeps(self)
-        deps.generate()
-        tc = CMakeToolchain(self)
-        tc.generate()
-    
     def build(self):
         cmake = CMake(self)
-        cmake.configure()
+        cmake.configure(variables={"BUILD_TESTING": "ON"})
         cmake.build()
+        cmake.test()
 
     def package(self):
         cmake = CMake(self)

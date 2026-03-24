@@ -20,3 +20,9 @@ install(TARGETS ${PROJECT_NAME}
 )
 
 install(DIRECTORY include/cpputils DESTINATION include FILES_MATCHING PATTERN "*.h")
+
+option(BUILD_TESTING "Build unit tests" OFF)
+if(BUILD_TESTING)
+    enable_testing()
+    add_subdirectory(test)
+endif()
